@@ -1,25 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { Root, Header } from './components/styled';
+import MenuPage from './components/MenuPage';
+import VisualizerPages from './components/visualizers';
+
 import './App.css';
+import 'antd/dist/antd.css';
 
 function App() {
+  const [pageState, setPageState] = useState('menu');
+
+  const BodyComponent = VisualizerPages[pageState] || MenuPage;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Root>
+      <Header>Airline Data Visualizer</Header>
+      <BodyComponent
+        pageState={pageState}
+        setPageState={setPageState}
+        visualizers={Object.keys(VisualizerPages)}
+      />
+    </Root>
   );
 }
 
