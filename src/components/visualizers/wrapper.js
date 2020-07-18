@@ -2,6 +2,7 @@ import React from 'react';
 import { Breadcrumb } from 'antd';
 
 import { Body, VisualizerHeader } from '../styled';
+import { StyleProvider } from '../../context/StyleContext';
 
 export default (Component) => (props) => {
   return (
@@ -18,7 +19,9 @@ export default (Component) => (props) => {
           <Breadcrumb.Item>{props.pageState}</Breadcrumb.Item>
         </Breadcrumb>
       </VisualizerHeader>
-      <Component {...props} />
+      <StyleProvider>
+        <Component {...props} />
+      </StyleProvider>
     </Body>
   );
 };
