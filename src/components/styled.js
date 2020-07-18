@@ -40,5 +40,5 @@ export const VisualizerHeader = styled(Wrapper)`
 `;
 
 export const VisualizerBody = styled(Wrapper)`
-  height: calc(100% = ${VISUALIZER_HEADER_HEIGHT});
+  height: calc(100% - ${VISUALIZER_HEADER_HEIGHT});
 `;
