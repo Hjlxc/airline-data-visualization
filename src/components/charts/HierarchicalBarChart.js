@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 
 import { CenteredWrapper } from '../styled';
 import { StyleContext } from '../../context/StyleContext';
-import { hierarchyDataParser, getHierarchyData } from '../../utils/dataParser';
 import { renderBarChart } from '../../utils/barChart';
 
 // Base hierarchicalBarChart component
@@ -17,9 +16,6 @@ export default ({
   const containerEl = useRef(null);
   const [width, setWidth] = useState(containerWidth);
   const [height, setHeight] = useState(containerHeight);
-
-  // save the hierarchical tree to avoid reparse due to style update
-  const [root, setRoot] = useState(hierarchyDataParser(data));
 
   // path is an array of index to track the node inside hierarchical tree the current chart display
   // it is useful when we want to re-render the chart due to style change, etc
@@ -40,27 +36,10 @@ export default ({
     [containerEl, containerWidth, containerHeight]
   );
 
-  // reparse the data when input data changes
-  useEffect(
-    () => {
-      const newRoot = hierarchyDataParser(data);
-
-      // reset path if the new data invalid current path
-      try {
-        getHierarchyData(newRoot, path.current);
-      } catch (e) {
-        path.current = [];
-      }
-
-      setRoot(hierarchyDataParser(data));
-    },
-    [data]
-  );
-
   // update chart when relative state/props changed
   useEffect(
     () => {
-      if (!root) return;
+      if (!data) return;
       const svg = d3.select(svgEl.current);
 
       // new style
@@ -72,7 +51,7 @@ export default ({
 
       renderBarChart(
         svg,
-        root,
+        data,
         {
           ...chartStyle,
           width: chartWidth,
@@ -82,7 +61,7 @@ export default ({
         { animation: true }
       );
     },
-    [width, height, contextStyle, style, root]
+    [width, height, contextStyle, style, data]
   );
 
   return (
