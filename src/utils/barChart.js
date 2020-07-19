@@ -1,8 +1,9 @@
 import * as d3 from 'd3';
 
+import { getHierarchyData } from './dataParser';
 // Hierarchical Bar Chart reference: https://observablehq.com/@d3/hierarchical-bar-chart
 
-export const renderBarChart = (svg, root, style, options = {}) => {
+export const renderBarChart = (svg, root, style, path, options = {}) => {
   const { animation, initialAnimation } = options;
   let initial = true;
 
@@ -128,6 +129,7 @@ export const renderBarChart = (svg, root, style, options = {}) => {
         .attr('fill', (d) => color(!!d.children))
         .attr('width', (d) => scale(d.value) - scale(0));
     }
+    path.pop();
   }
 
   // expend the nested children chart
@@ -213,6 +215,8 @@ export const renderBarChart = (svg, root, style, options = {}) => {
         .attr('fill', (d) => color(!!d.children))
         .attr('width', (d) => scale(d.value) - scale(0));
     }
+    !initial && path.push(d.index);
+
     initial = false; // set initial flag to false after calling down function
   }
 
@@ -249,8 +253,8 @@ export const renderBarChart = (svg, root, style, options = {}) => {
 
     return g;
   }
-
-  scale.domain([0, root.value]);
+  const renderNode = getHierarchyData(root, path);
+  scale.domain([0, renderNode.value]);
 
   svg
     .append('rect')
@@ -267,7 +271,7 @@ export const renderBarChart = (svg, root, style, options = {}) => {
 
   svg.append('g').call(yAxis);
 
-  down(svg, root);
+  down(svg, renderNode);
 
   return svg.node();
 };

@@ -3,9 +3,10 @@ import * as d3 from 'd3';
 
 import { CenteredWrapper } from '../styled';
 import { StyleContext } from '../../context/StyleContext';
-import { hierarchyDataParser } from '../../utils/dataParser';
+import { hierarchyDataParser, getHierarchyData } from '../../utils/dataParser';
 import { renderBarChart } from '../../utils/barChart';
 
+// Base hierarchicalBarChart component
 export default ({
   data,
   style = {},
@@ -16,7 +17,15 @@ export default ({
   const containerEl = useRef(null);
   const [width, setWidth] = useState(containerWidth);
   const [height, setHeight] = useState(containerHeight);
+
+  // save the hierarchical tree to avoid reparse due to style update
   const [root, setRoot] = useState(hierarchyDataParser(data));
+
+  // path is an array of index to track the node inside hierarchical tree the current chart display
+  // it is useful when we want to re-render the chart due to style change, etc
+  // the reason not put in the state is because changing the hierarchy of chart is handled by s3, we don't want
+  // to cause re-render when we update the path
+  const path = useRef([]);
 
   // Read style from StyleContext as default
   const { style: contextStyle } = useContext(StyleContext);
@@ -34,13 +43,21 @@ export default ({
   // reparse the data when input data changes
   useEffect(
     () => {
+      const newRoot = hierarchyDataParser(data);
+
+      // reset path if the new data invalid current path
+      try {
+        getHierarchyData(newRoot, path.current);
+      } catch (e) {
+        path.current = [];
+      }
+
       setRoot(hierarchyDataParser(data));
     },
     [data]
   );
 
   // update chart when relative state/props changed
-  // Hierarchical Bar Chart reference: https://observablehq.com/@d3/hierarchical-bar-chart
   useEffect(
     () => {
       if (!root) return;
@@ -61,7 +78,8 @@ export default ({
           width: chartWidth,
           height: chartHeight,
         },
-        {}
+        path.current, // path will be updated inside this function
+        { animation: true }
       );
     },
     [width, height, contextStyle, style, root]

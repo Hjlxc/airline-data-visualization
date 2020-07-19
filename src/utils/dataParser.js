@@ -14,3 +14,15 @@ export const hierarchyDataParser = (data) =>
         // the parent index will be reset when it travesed to the parent node
         (d.index = d.parent ? (d.parent.index = d.parent.index + 1 || 0) : 0)
     );
+
+// get the node from hierarchical tree from an array of index
+export const getHierarchyData = (root, path = []) => {
+  let node = root;
+  path.forEach((idx) => {
+    if (!node.children)
+      throw new ReferenceError(`getHierarchyData error! Invalid path ${path}!`);
+
+    node = node.children[idx];
+  });
+  return node;
+};
