@@ -4,6 +4,8 @@ const defaultStyle = {
   margin: { top: 30, right: 120, bottom: 30, left: 120 },
   color: ['steelblue', '#ccc'],
   duration: 750,
+  maxBarSize: 30,
+  barPadding: 0.15,
 };
 
 const styles = {
