@@ -12,7 +12,7 @@ export const addIndexToHierarchyData = (hierarchyData) =>
 export const getHierarchyData = (root, path = []) => {
   let node = root;
   path.forEach((idx) => {
-    if (!node.children)
+    if (!node.children || !node.children[idx])
       throw new ReferenceError(`getHierarchyData error! Invalid path ${path}!`);
 
     node = node.children[idx];
