@@ -1,9 +1,9 @@
 import wrapper from './wrapper';
 
-import visualizer1 from './visualizer1';
-import visualizer2 from './visualizer2';
+import flightsNumberData from './flightsNumberData';
+import flightsDelayData from './flightsDelayData';
 
 export default {
-  visualizer1: wrapper(visualizer1),
-  visualizer2: wrapper(visualizer2),
+  'Flights Number Data': wrapper(flightsNumberData),
+  'Flights Delay Data': wrapper(flightsDelayData),
 };
