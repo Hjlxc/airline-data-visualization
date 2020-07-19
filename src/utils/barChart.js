@@ -24,7 +24,7 @@ export const renderBarChart = (svg, root, style, path, options = {}) => {
           .append('line')
           .attr('stroke', 'currentColor')
           .attr('y1', style.margin.top)
-          .attr('y2', style.height - style.margin.bottom)
+          .attr('y2', style.height)
       );
 
   const xAxis = (g) =>
