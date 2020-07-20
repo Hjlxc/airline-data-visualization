@@ -20,7 +20,7 @@ const monthMap = {
   '9': 'Sep',
   '10': 'Oct',
   '11': 'Nov',
-  '12': 'Dev',
+  '12': 'Dec',
 };
 
 export const parser = (data) => {
