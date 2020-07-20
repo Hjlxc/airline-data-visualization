@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 const HEADER_HEIGHT = '50px';
 const VISUALIZER_HEADER_HEIGHT = '30px';
+const TRANSITION_DURATION = '0.5s';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -16,6 +17,8 @@ export const CenteredWrapper = styled(Wrapper)`
 
 export const Root = styled(Wrapper)`
   text-align: center;
+  position: relative;
+  overflow: hidden;
 `;
 
 export const Header = styled(CenteredWrapper)`
@@ -26,8 +29,14 @@ export const Header = styled(CenteredWrapper)`
 `;
 
 export const Body = styled(Wrapper)`
+  margin-top: ${HEADER_HEIGHT};
   height: calc(100% - ${HEADER_HEIGHT});
   padding: 10px;
+  transition: all ${TRANSITION_DURATION};
+  position: absolute;
+  top: 0px;
+  transform: ${({ translate = {} }) =>
+    `translate(${100 * translate.x || 0}%,${100 * translate.y}%)`};
 `;
 
 export const VisualizerHeader = styled(Wrapper)`

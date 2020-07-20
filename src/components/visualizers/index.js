@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import * as d3 from 'd3';
 
 import wrapper from './wrapper';
@@ -59,15 +59,18 @@ export default ({ pageState, setPageState }) => {
     },
     [data, pageState, parsedData]
   );
-  const VisualizerComponent = (
-    visualizers[pageState] || Object.values(visualizers)[0]
-  ).Component;
+
   return (
-    <VisualizerComponent
-      translate={visualizers[pageState] ? { x: 0, y: 0 } : { x: 1, y: 0 }}
-      data={parsedData[pageState]}
-      pageState={pageState}
-      setPageState={setPageState}
-    />
+    <Fragment>
+      {Object.entries(visualizers).map(([name, { Component }]) => (
+        <Component
+          key={name}
+          translate={pageState === name ? { x: 0, y: 0 } : { x: 1, y: 0 }}
+          data={parsedData[pageState]}
+          pageState={pageState}
+          setPageState={setPageState}
+        />
+      ))}
+    </Fragment>
   );
 };

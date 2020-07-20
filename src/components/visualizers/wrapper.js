@@ -6,7 +6,7 @@ import { StyleProvider } from '../../context/StyleContext';
 
 export default (Component) => (props) => {
   return (
-    <Body>
+    <Body translate={props.translate}>
       <VisualizerHeader>
         <Breadcrumb>
           <Breadcrumb.Item

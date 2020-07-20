@@ -3,9 +3,13 @@ import { List } from 'antd';
 
 import { Body, CenteredWrapper } from './styled';
 
-export default ({ visualizers, setPageState }) => {
+export default ({ visualizers, pageState, setPageState }) => {
   return (
-    <Body>
+    <Body
+      translate={
+        visualizers.includes(pageState) ? { x: -1, y: 0 } : { x: 0, y: 0 }
+      }
+    >
       <List
         dataSource={visualizers}
         renderItem={(item) => (
