@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import * as d3 from 'd3';
 
-import VisualizerBase from '../charts/HierarchicalBarChart';
+import HierarchicalBarChart from '../charts/HierarchicalBarChart';
 import { VisualizerBody } from '../styled';
-import { csvParser } from '../../utils/csvParser';
 import {
   mapNestToHierarchyStructure,
   addIndexToHierarchyData,
 } from '../../utils/dataParser';
-import dataPath from '../../assets/data/flights_2015_sample.csv';
 
 const monthMap = {
   '1': 'Jan',
@@ -25,8 +23,9 @@ const monthMap = {
   '12': 'Dev',
 };
 
-const validateData = (data) =>
-  data
+export const parser = (data) => {
+  if (!data) return null;
+  const validateData = data
     .filter(
       (data) =>
         data['CANCELLED'] !== '1' &&
@@ -35,14 +34,14 @@ const validateData = (data) =>
         )
     )
     .map((data) => ({ ...data, MONTH: monthMap[data.MONTH] }));
-const parseData = (data) => {
+
   // group the data by airline/month/day
   const nestData = d3
     .nest()
     .key((d) => d.AIRLINE)
     .key((d) => d.MONTH)
     .key((d) => d.DAY)
-    .entries(data);
+    .entries(validateData);
   const hierarchyData = mapNestToHierarchyStructure(
     'Delay Data',
     nestData,
@@ -71,18 +70,10 @@ const parseData = (data) => {
   return addIndexToHierarchyData(parsedData);
 };
 
-export default () => {
-  const [data, setData] = useState(null);
-  useEffect(() => {
-    (async () => {
-      const data = await csvParser(dataPath, validateData, parseData);
-      console.log(data);
-      setData(data);
-    })();
-  }, []);
+export default (props) => {
   return (
     <VisualizerBody>
-      <VisualizerBase data={data} />
+      <HierarchicalBarChart {...props} />
     </VisualizerBody>
   );
 };

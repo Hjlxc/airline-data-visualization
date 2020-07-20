@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import * as d3 from 'd3';
 
-import VisualizerBase from '../charts/HierarchicalBarChart';
+import HierarchicalBarChart from '../charts/HierarchicalBarChart';
 import { VisualizerBody } from '../styled';
-import { csvParser } from '../../utils/csvParser';
 import {
   mapNestToHierarchyStructure,
   addIndexToHierarchyData,
 } from '../../utils/dataParser';
-
-import dataPath from '../../assets/data/flights_2015_sample.csv';
 
 const weekdayMap = {
   '1': 'Monday',
@@ -21,17 +18,17 @@ const weekdayMap = {
   '7': 'Sunday',
 };
 
-const validateData = (data) =>
-  data
-    .filter((data) => data['CANCELLED'] !== '1')
-    .map((data) => ({ ...data, WEEKDAY: weekdayMap[data.DAY_OF_WEEK] }));
+export const parser = (data) => {
+  if (!data) return null;
+  const validateData = data
+    .filter((d) => d['CANCELLED'] !== '1')
+    .map((d) => ({ ...d, WEEKDAY: weekdayMap[d.DAY_OF_WEEK] }));
 
-const parseData = (data) => {
   const nestData = d3
     .nest()
     .key((d) => d.WEEKDAY)
     .key((d) => d.AIRLINE)
-    .entries(data);
+    .entries(validateData);
 
   const hierarchyData = mapNestToHierarchyStructure(
     'Flights Number',
@@ -52,17 +49,10 @@ const parseData = (data) => {
   return addIndexToHierarchyData(parsedData);
 };
 
-export default () => {
-  const [data, setData] = useState(null);
-  useEffect(() => {
-    (async () => {
-      const data = await csvParser(dataPath, validateData, parseData);
-      setData(data);
-    })();
-  }, []);
+export default (props) => {
   return (
     <VisualizerBody>
-      <VisualizerBase data={data} />
+      <HierarchicalBarChart {...props} />
     </VisualizerBody>
   );
 };
