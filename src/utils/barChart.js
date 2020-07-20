@@ -3,6 +3,10 @@ import * as d3 from 'd3';
 import { getHierarchyData } from './dataParser';
 // Hierarchical Bar Chart reference: https://observablehq.com/@d3/hierarchical-bar-chart
 
+const getBarSize = (d, style) => {
+  return Math.min(style.height / d.children.length, style.maxBarSize);
+};
+
 export const renderBarChart = (svg, root, style, path, options = {}) => {
   const { animation, initialAnimation } = options;
   let initial = true;
@@ -42,8 +46,10 @@ export const renderBarChart = (svg, root, style, path, options = {}) => {
     let value = 0;
     return (d, i) => {
       const idx = index !== undefined ? index : i;
-      const t = `translate(${scale(value) - scale(0)},${style.maxBarSize *
-        idx})`;
+      const t = `translate(${scale(value) - scale(0)},${getBarSize(
+        d.parent,
+        style
+      ) * idx})`;
       value += d.value;
       return t;
     };
@@ -97,7 +103,10 @@ export const renderBarChart = (svg, root, style, path, options = {}) => {
 
       enter
         .selectAll('g')
-        .attr('transform', (d, i) => `translate(0,${style.maxBarSize * i})`);
+        .attr(
+          'transform',
+          (d, i) => `translate(0,${getBarSize(d.parent, style) * i})`
+        );
 
       // Transition entering bars to fade in over the full duration.
       enter.transition(transition2).attr('fill-opacity', 1);
@@ -122,7 +131,10 @@ export const renderBarChart = (svg, root, style, path, options = {}) => {
       enter.attr('fill-opacity', 1);
       enter
         .selectAll('g')
-        .attr('transform', (d, i) => `translate(0, ${style.maxBarSize * i})`);
+        .attr(
+          'transform',
+          (d, i) => `translate(0, ${getBarSize(d.parent, style) * i})`
+        );
       enter
         .selectAll('rect')
         .attr('fill-opacity', 1)
@@ -183,7 +195,10 @@ export const renderBarChart = (svg, root, style, path, options = {}) => {
       enter
         .selectAll('g')
         .transition(transition2)
-        .attr('transform', (d, i) => `translate(0,${style.maxBarSize * i})`);
+        .attr(
+          'transform',
+          (d, i) => `translate(0,${getBarSize(d.parent, style) * i})`
+        );
 
       // Color the bars as parents; they will fade to children if appropriate.
       enter
@@ -208,7 +223,10 @@ export const renderBarChart = (svg, root, style, path, options = {}) => {
       enter.attr('fill-opacity', 1);
       enter
         .selectAll('g')
-        .attr('transform', (d, i) => `translate(0,${style.maxBarSize * i})`);
+        .attr(
+          'transform',
+          (d, i) => `translate(0,${getBarSize(d.parent, style) * i})`
+        );
       enter
         .selectAll('rect')
         .attr('fill-opacity', 1)
@@ -226,7 +244,8 @@ export const renderBarChart = (svg, root, style, path, options = {}) => {
       .attr('class', 'enter')
       .attr(
         'transform',
-        `translate(0,${style.margin.top + style.maxBarSize * style.barPadding})`
+        `translate(0,${style.margin.top +
+          getBarSize(d, style) * style.barPadding})`
       )
       .attr('text-anchor', 'end')
       .style('font', '10px sans-serif');
@@ -241,7 +260,7 @@ export const renderBarChart = (svg, root, style, path, options = {}) => {
     bar
       .append('text')
       .attr('x', style.margin.left - 6)
-      .attr('y', (style.maxBarSize * (1 - style.barPadding)) / 2)
+      .attr('y', (getBarSize(d, style) * (1 - style.barPadding)) / 2)
       .attr('dy', '.35em')
       .text((d) => d.data.name);
 
@@ -249,7 +268,7 @@ export const renderBarChart = (svg, root, style, path, options = {}) => {
       .append('rect')
       .attr('x', scale(0))
       .attr('width', (d) => scale(d.value) - scale(0))
-      .attr('height', style.maxBarSize * (1 - style.barPadding));
+      .attr('height', getBarSize(d, style) * (1 - style.barPadding));
 
     return g;
   }
