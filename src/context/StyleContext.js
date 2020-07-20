@@ -8,12 +8,13 @@ const defaultStyle = {
   barPadding: 0.15,
 };
 
-const styles = {
+export const styles = {
   default: defaultStyle,
   customize: {
     ...defaultStyle,
     margin: { top: 50, right: 200, bottom: 50, left: 200 },
-    color: ['red', '#000'],
+    color: ['green', '#eee'],
+    duration: 1500,
   },
 };
 

@@ -43,7 +43,7 @@ export const VisualizerHeader = styled(Wrapper)`
   height: ${VISUALIZER_HEADER_HEIGHT};
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 0px 10px;
   font-size: 20px;
 `;

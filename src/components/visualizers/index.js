@@ -1,8 +1,8 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as d3 from 'd3';
 
 import wrapper from './wrapper';
-
+import { StyleProvider } from '../../context/StyleContext';
 import flightsNumberData, {
   parser as flightsNumberDataParser,
 } from './flightsNumberData';
@@ -61,7 +61,7 @@ export default ({ pageState, setPageState }) => {
   );
 
   return (
-    <Fragment>
+    <StyleProvider>
       {Object.entries(visualizers).map(([name, { Component }]) => (
         <Component
           key={name}
@@ -71,6 +71,6 @@ export default ({ pageState, setPageState }) => {
           setPageState={setPageState}
         />
       ))}
-    </Fragment>
+    </StyleProvider>
   );
 };
